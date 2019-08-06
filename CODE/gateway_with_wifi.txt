@@ -1,0 +1,122 @@
+/*************************************************************
+  Download latest Blynk library here:
+    https://github.com/blynkkk/blynk-library/releases/latest
+
+  Blynk is a platform with iOS and Android apps to control
+  Arduino, Raspberry Pi and the likes over the Internet.
+  You can easily build graphic interfaces for all your
+  projects by simply dragging and dropping widgets.
+
+    Downloads, docs, tutorials: http://www.blynk.cc
+    Sketch generator:           http://examples.blynk.cc
+    Blynk community:            http://community.blynk.cc
+    Follow us:                  http://www.fb.com/blynkapp
+                                http://twitter.com/blynk_app
+
+  Blynk library is licensed under MIT license
+  This example code is in public domain.
+
+ *************************************************************
+  This example runs directly on NodeMCU.
+
+  Note: This requires ESP8266 support package:
+    https://github.com/esp8266/Arduino
+
+  Please be sure to select the right NodeMCU module
+  in the Tools -> Board menu!
+
+  For advanced settings please follow ESP examples :
+   - ESP8266_Standalone_Manual_IP.ino
+   - ESP8266_Standalone_SmartConfig.ino
+   - ESP8266_Standalone_SSL.ino
+
+  Change WiFi ssid, pass, and Blynk auth token to run :)
+  Feel free to apply it to any other example. It's simple!
+ *************************************************************/
+
+/* Comment this out to disable prints and save space */
+#define BLYNK_PRINT Serial
+
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+char My_String[30];
+int String_Length,flag1,flag2,Address_Index,Watt_Index,Power_Index;
+char Address[30],Watt_Per_Second[30],Total_Power[30];
+BlynkTimer timer;
+// You should get Auth Token in the Blynk App.
+// Go to the Project Settings (nut icon).
+char auth[] = "9c0f15fc9db146f19808881e9fdc4611";
+
+
+
+// Your WiFi credentials.
+// Set password to "" for open networks.
+char ssid[] = "lone";
+char pass[] = "neticui4cu";
+void sendSensor()
+{
+
+ Blynk.virtualWrite(V0,564756789);
+
+ Blynk.virtualWrite(V1,Watt_Per_Second);
+
+ Blynk.virtualWrite(V2,Total_Power);
+
+}
+
+void setup()
+{
+  // Debug console
+  Serial.begin(9600);
+
+  Blynk.begin(auth, ssid, pass);
+    timer.setInterval(1000L, sendSensor);
+  // You can also specify server:
+  //Blynk.begin(auth, ssid, pass, "blynk-cloud.com", 80);
+  //Blynk.begin(auth, ssid, pass, IPAddress(192,168,1,100), 8080);
+}
+
+void loop()
+{
+  Blynk.run();
+   timer.run();
+   Serial.readBytes(My_String,20); //Read the serial data and store in var
+   String_Length=strlen(My_String);
+   Address_Index=0;Watt_Index=0;Power_Index=0;flag1=0;flag2=0;
+  // if(My_String[0]=='+')
+   for( int i=0;i<String_Length;i++)
+   {
+    if(My_String[i]=='$')
+    {
+      flag1=1;
+      continue;
+    }
+    if(My_String[i]=='=')
+    {
+      flag2=1;
+       continue;
+      }
+      if(flag1==0&&flag2==0)
+      {
+        if(My_String[i]=='+')
+        continue;
+        Address[Address_Index++]=My_String[i];
+        }
+        else if(flag1==1&&flag2==0)
+        {
+          Watt_Per_Second[Watt_Index++]=My_String[i];
+        }
+        else if(flag1==1&&flag2==1)
+        {
+        Total_Power[Power_Index++]=My_String[i];
+        }
+
+        }
+
+  Serial.println(My_String); //Print data on Serial Monitor
+  Serial.println(Address);
+  Serial.println(Watt_Per_Second);
+  Serial.println(Total_Power);
+
+}

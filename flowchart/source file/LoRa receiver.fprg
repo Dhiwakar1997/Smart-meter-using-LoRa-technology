@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value=""/>
+        <attribute name="authors" value="Nagarajan"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2019-03-23 03:07:38 PM"/>
+        <attribute name="created" value="TmFnYXJhamFuO0xBUFRPUC1DTDNJR0IxUjsyMDE5LTAzLTIzOzAyOjU1OjM2IFBNOzMyMjg="/>
+        <attribute name="edited" value="TmFnYXJhamFuO0xBUFRPUC1DTDNJR0IxUjsyMDE5LTAzLTIzOzAzOjA3OjM4IFBNOzE7MzMzNg=="/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <while expression="1==1">
+                <assign variable="packetSize" expression=""/>
+                <if expression="packetavailable">
+                    <then>
+                        <while expression="LoRaavailable">
+                            <call expression="readstring"/>
+                        </while>
+                        <call expression="writeTOethernet"/>
+                        <call expression="writeTOesp8266"/>
+                    </then>
+                    <else/>
+                </if>
+            </while>
+        </body>
+    </function>
+</flowgorithm>

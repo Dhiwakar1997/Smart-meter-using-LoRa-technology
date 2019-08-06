@@ -1,0 +1,84 @@
+#include <SPI.h> // arduino spi library
+
+#include <LoRa.h> // arduino libraries ra02 lora
+
+#include "EmonLib.h"             // Include Emon Library
+
+EnergyMonitor emon1;             // Create an instance
+
+float Watt_per_Second = 0, Watt_per_Hour = 0, Total_Power = 0;
+
+int f = 0, Counter = 0;
+
+char Address[10] = "56788747";
+
+void setup()
+{
+  Serial.begin(9600);
+
+  emon1.voltage(0, 380, 1.7);  // Voltage: input pin, calibration, phase_shift
+
+  emon1.current(1, 10.8);       // Current: input pin, calibration.
+
+  while (!Serial);
+
+  Serial.println("LoRa Sender");
+
+  if (!LoRa.begin(433E6)) {
+
+    Serial.println("Starting LoRa failed!");
+
+    while (1);
+
+  }
+
+  LoRa.setSpreadingFactor(10);
+
+  LoRa.setSignalBandwidth(62.5E3);
+
+  LoRa.crc();// put your setup code here, to run once:
+
+}
+
+void loop() {
+
+
+  emon1.calcVI(20, 2000);
+
+  float Watt_per_Second   = emon1.apparentPower;
+
+  Watt_per_Hour = Watt_per_Second / 3600;
+
+  Total_Power = Total_Power + Watt_per_Hour;
+
+  LoRa.beginPacket();
+
+  LoRa.print('+');
+
+  LoRa.print(Address);
+
+  LoRa.print('$');
+
+  LoRa.print(Watt_per_Second);
+
+  LoRa.print('=');
+
+  LoRa.print(Total_Power);
+
+  LoRa.endPacket();
+
+  Counter++;
+  ////////////
+  // DELAY  //
+  ////////////
+  if (f == 0)
+  {
+    delay(601);
+  }
+  else
+  {
+    delay(592);
+    f = 0;
+  }
+
+}

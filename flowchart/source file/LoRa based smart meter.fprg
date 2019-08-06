@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="2.11">
+    <attributes>
+        <attribute name="name" value=""/>
+        <attribute name="authors" value="Nagarajan"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2019-03-23 02:13:10 PM"/>
+        <attribute name="created" value="TmFnYXJhamFuO0xBUFRPUC1DTDNJR0IxUjsyMDE5LTAzLTIzOzEyOjM0OjM3IFBNOzMyMjc="/>
+        <attribute name="edited" value="TmFnYXJhamFuO0xBUFRPUC1DTDNJR0IxUjsyMDE5LTAzLTIzOzAyOjEzOjEwIFBNOzI7MzMyMw=="/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <assign variable="address" expression="564756789"/>
+            <while expression="1==1">
+                <for variable="k" start="1" end="60" direction="inc" step="1">
+                    <for variable="j" start="1" end="60" direction="inc" step="1">
+                        <assign variable="p0" expression="apparentPower"/>
+                        <assign variable="sec[k]" expression="sec[k]+p0"/>
+                        <call expression="lorasend"/>
+                        <call expression="delay"/>
+                    </for>
+                    <assign variable="mint[k]" expression="sec[k]/60"/>
+                    <assign variable="sec[k]" expression="0"/>
+                    <if expression="k==60">
+                        <then>
+                            <for variable="p" start="1" end="60" direction="inc" step="1">
+                                <assign variable="h" expression="h+mint[p]"/>
+                                <assign variable="mint[p]" expression="0"/>
+                            </for>
+                            <assign variable="h" expression="h/60"/>
+                            <assign variable="POWER" expression="POWER+h"/>
+                            <assign variable="h" expression="0"/>
+                        </then>
+                        <else/>
+                    </if>
+                </for>
+            </while>
+        </body>
+    </function>
+</flowgorithm>
